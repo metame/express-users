@@ -1,0 +1,9 @@
+extends layout
+
+block content
+    form(name="adduser", method="post", action="/adduser")
+        input(type="text" name="username" placeholder="username")
+        input(type="password" name="password" placeholder="password")
+        input(type="email" name="email" placeholder="email address")
+        button(type="submit") Register
+    a(href="/login") Already registered? Login here!
