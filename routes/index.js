@@ -21,15 +21,16 @@ router.post('/authorize', function(req,res){
                 console.log("Incorrect password");
             }
             else{
-                res.redirect('/success');
+                res.redirect('/users/' + doc.username);
             }
         }
     });
 });
 
+/* //Uncomment to route to success landing page instead of profile after login
 router.get('/success', function(req, res){
     res.send('You have successfully logged in!');
-});
+});*/
 
 router.get('/register', function(req, res){
     res.render('register', title="Register");
@@ -39,7 +40,9 @@ router.post('/addUser', function(req, res){
     var db = req.db,
         users = db.get('users'),
         register = req.body;
+
     users.insert({'username': register.username, 'password': register.password, 'email': register.email}, function(err, inserted){
+
         console.log(register.username + ' registered!');
         res.redirect('/registered');
     });
@@ -54,18 +57,47 @@ router.get('/users', function(req, res){
     var db = req.db,
         users = db.get('users');
 
-    users.find({},{'username':1, '_id':0},function(err, docs){
+    users.find({},['-password','-_id','-email'],function(err, docs){
+
         res.render('users', {title:"Users", userlist: docs});
     });
 });
 
 router.get('/users/:username', function(req, res){
-    var thisUser = req.params.username;
-    res.render('profile', title="Profile of " + thisUser);
+    var db = req.db,
+        users = db.get('users'),
+        thisUser = req.params.username;
+
+    users.findOne({'username': thisUser},['-_id','-password'],function(err, doc){
+        
+        res.render('profile', {title:"Profile of " + thisUser, user: doc});
+    });    
 });
 
-router.get('/search', function(req, res){
-    res.send('Search page');
+router.get('/users/:username/edit', function(req, res){
+    var db = req.db,
+        users = db.get('users'),
+        thisUser = req.params.username;
+
+    users.findOne({'username': thisUser},['-_id','-password'],function(err, doc){
+
+        res.render('profile-edit',{title:"Profile of " + thisUser, user: doc});
+    });
 });
+
+router.post('/users/:username/update', function(req, res){
+    var db = req.db,
+        users = db.get('users'),
+        update = req.body;
+
+    users.update({'username': req.params.username},{'username': update.username, 'password': update.password, 'email': update.email}, function(err, updated){
+
+        res.redirect('/users/' + update.username);
+    });
+
+});
+
+
+
 
 module.exports = router;

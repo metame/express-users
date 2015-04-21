@@ -1,0 +1,13 @@
+extends layout
+
+block content
+    form(name="userUpdate", method="post", action="/users/" + user.username + "/update")
+        label username
+        input(type="text" name="username" value=user.username)
+        label password
+        input(type="password" name="password" placeholder="password")
+        label email
+        input(type="email" name="email" value=user.email)
+        button(type="submit") Update
+        a(href="/users/" + user.username)
+            button(type="button") Cancel

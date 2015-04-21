@@ -1,4 +1,12 @@
 extends layout
 
 block content
-    
+    table
+        each val, index in user
+            tr
+                td= index
+                td= val
+        tr
+            td password
+            td <em>hidden for security</em>
+    a(href="/users/" + user.username + "/edit") Edit profile
