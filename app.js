@@ -6,17 +6,20 @@ var express = require('express'),
     port = process.env.PORT | 8080;
 
 // require dependencies
-var bodyParser = require('body-parser');
-
-// mongo setup
-var mongo = require('mongodb'),
-    db = require('monk')('localhost:27017/profile-app');
+var bodyParser = require('body-parser'),
+    passport = require('./lib/passport'),
+    db = require('./lib/mongodb');
 
 // Setup public directory for static serving
 app.use(express.static(__dirname + 'public'));
 
 // Use bodyParser for POST requests
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// Passport initialize
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

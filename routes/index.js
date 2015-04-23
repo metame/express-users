@@ -1,5 +1,6 @@
 var express = require('express'),
-    router = express.Router();
+    router = express.Router(),
+    passport = require('../lib/passport');
 
 router.get('/', function(req,res){
     res.redirect('/login');
@@ -9,23 +10,31 @@ router.get('/login', function(req, res){
     res.render('login', title="Login");
 });
 
-router.post('/authorize', function(req,res){
-    var db = req.db,
-        users = db.get('users'),
-        login = req.body;
-    users.findOne({'username':login.username,'password':login.password},{},function(err, doc){
-        if(doc.username != login.username){
-            console.log("Username does not exist");
-        } else {
-            if(doc.password != login.password){
-                console.log("Incorrect password");
-            }
-            else{
-                res.redirect('/users/' + doc.username);
-            }
-        }
-    });
+router.post('/authorize', passport.authenticate('local'),
+  function(req, res) {
+    // If this function gets called, authentication was successful.
+    // `req.user` contains the authenticated user.
+    res.redirect('/users/' + req.user.username);
 });
+
+// basic code using non-secure login via mongodb
+// router.post('/authorize', function(req,res){
+//     var db = req.db,
+//         users = db.get('users'),
+//         login = req.body;
+//     users.findOne({'username':login.username,'password':login.password},{},function(err, doc){
+//         if(doc.username != login.username){
+//             console.log("Username does not exist");
+//         } else {
+//             if(doc.password != login.password){
+//                 console.log("Incorrect password");
+//             }
+//             else{
+//                 res.redirect('/users/' + doc.username);
+//             }
+//         }
+//     });
+// });
 
 /* //Uncomment to route to success landing page instead of profile after login
 router.get('/success', function(req, res){
