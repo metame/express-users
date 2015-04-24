@@ -9,6 +9,11 @@ var express = require('express'),
 var bodyParser = require('body-parser'),
     passport = require('./lib/passport'),
     db = require('./lib/mongodb');
+    
+// create unique indexes for username and password
+var users = db.get('users');
+users.index('username', {unique : true});
+users.index('email', {unique : true});
 
 // Setup public directory for static serving
 app.use(express.static(__dirname + 'public'));
@@ -18,8 +23,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Passport initialize
 
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
