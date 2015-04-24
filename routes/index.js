@@ -1,6 +1,7 @@
 var express = require('express'),
     router = express.Router(),
-    passport = require('../lib/passport');
+    passport = require('../lib/passport'),
+    bcrypt = require('bcrypt');
 
 router.get('/', function(req,res){
     res.redirect('/login');
@@ -10,7 +11,7 @@ router.get('/login', function(req, res){
     res.render('login', title="Login");
 });
 
-router.post('/authorize', passport.authenticate('local'),
+router.post('/authorize', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }),
   function(req, res) {
     // If this function gets called, authentication was successful.
     // `req.user` contains the authenticated user.
@@ -48,10 +49,17 @@ router.get('/register', function(req, res){
 router.post('/addUser', function(req, res){
     var db = req.db,
         users = db.get('users'),
-        register = req.body;
+        register = req.body,
+        passwordHash;
+    
+    bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.hash(register.password, salt, function(err, hash) {
+            passwordHash = hash;
+        });
+    });
 
-    users.insert({'username': register.username, 'password': register.password, 'email': register.email}, function(err, inserted){
-
+    users.insert({'username': register.username, 'password': passwordHash, 'email': register.email}, function(err, inserted){
+        if(err) throw err;
         console.log(register.username + ' registered!');
         res.redirect('/registered');
     });
