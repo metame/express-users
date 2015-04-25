@@ -12,37 +12,37 @@ router.get('/login', function(req, res){
 });
 
 // Authorize with passport
-// router.post('/authorize', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }),
-//   function(req, res) {
-//     // If this function gets called, authentication was successful.
-//     // `req.user` contains the authenticated user.
-//     res.redirect('/users/' + req.user.username);
-// });
+router.post('/authorize', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }),
+  function(req, res) {
+    // If this function gets called, authentication was successful.
+    // `req.user` contains the authenticated user.
+    res.redirect('/users/' + req.user.username);
+});
 
 // login route for auth via bcrypt
-router.post('/authorize', function(req,res){
-    var db = req.db,
-        users = db.get('users'),
-        login = req.body;
+// router.post('/authorize', function(req,res){
+//     var db = req.db,
+//         users = db.get('users'),
+//         login = req.body;
         
-    users.findOne({'username':login.username},{},function(err, doc){
-        if(err) console.error(err);
-        if(!doc){
-            console.log("Username does not exist");
-        } else {
-            bcrypt.compare(login.password, doc.password, function(err, auth) {
-                if(err) console.error(err);
-                if(auth) {
-                    res.redirect('/users/' + login.username);
-                } else { 
-                    res.send('Incorrect Password'); 
-                }
-            });
+//     users.findOne({'username':login.username},{},function(err, doc){
+//         if(err) console.error(err);
+//         if(!doc){
+//             console.log("Username does not exist");
+//         } else {
+//             bcrypt.compare(login.password, doc.password, function(err, auth) {
+//                 if(err) console.error(err);
+//                 if(auth) {
+//                     res.redirect('/users/' + login.username);
+//                 } else { 
+//                     res.send('Incorrect Password'); 
+//                 }
+//             });
             
             
-        }
-    });
-});
+//         }
+//     });
+// });
 
 /* //Uncomment to route to success landing page instead of profile after login
 router.get('/success', function(req, res){
