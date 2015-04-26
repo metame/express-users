@@ -76,7 +76,7 @@ router.get('/registered', function(req, res){
     res.send('You have successfully signed up. <a href="/login">Click here to login!</a>');
 });
 
-router.get('/users', function(req, res){
+router.get('/users', ensureAuthenticated, function(req, res){
     var db = req.db,
         users = db.get('users');
 
@@ -86,7 +86,7 @@ router.get('/users', function(req, res){
     });
 });
 
-router.get('/users/:username', function(req, res){
+router.get('/users/:username', ensureAuthenticated, function(req, res){
     var db = req.db,
         users = db.get('users'),
         thisUser = req.params.username;
@@ -97,7 +97,7 @@ router.get('/users/:username', function(req, res){
     });    
 });
 
-router.get('/users/:username/edit', function(req, res){
+router.get('/users/:username/edit', ensureAuthenticated, function(req, res){
     var db = req.db,
         users = db.get('users'),
         thisUser = req.params.username;
@@ -108,7 +108,7 @@ router.get('/users/:username/edit', function(req, res){
     });
 });
 
-router.post('/users/:username/update', function(req, res){
+router.post('/users/:username/update', ensureAuthenticated, function(req, res){
     var db = req.db,
         users = db.get('users'),
         update = req.body;
@@ -125,6 +125,10 @@ router.post('/users/:username/update', function(req, res){
     });
 });
 
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect('/login');
+}
 
 
 

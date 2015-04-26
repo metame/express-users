@@ -7,6 +7,7 @@ var express = require('express'),
 
 // require dependencies
 var bodyParser = require('body-parser'),
+    cookieParser = require('cookie-parser'),
     session = require('express-session'),
     passport = require('./lib/passport'),
     db = require('./lib/mongodb');
@@ -18,11 +19,11 @@ users.index('email', {unique : true});
 
 // set up for passport sessions
 passport.serializeUser(function(user, done) {
-  done(null, user.id);
+  done(null, user.username);
 });
 
-passport.deserializeUser(function(id, done) {
-  user.findById(id, function (err, user) {
+passport.deserializeUser(function(username, done) {
+  users.findOne({username : username}, function (err, user) {
     done(err, user);
   });
 });
@@ -34,7 +35,8 @@ app.use(express.static(__dirname + 'public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Passport initialize
-app.use(session({ secret: 'keyboard cat' }));
+app.use(cookieParser());
+app.use(session({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
 app.use(passport.session());
 
