@@ -27,10 +27,12 @@ No more setup required for default behavior.
 GET `/register` renders user registration page.
 GET `/login` renders login page.
 
-All other routes including `/` render the `/login` page until there is an authenticated session.
+All other defined routes including `/` render the `/login` page until there is an authenticated session.
 
-Once authenticated, the following routes are unique:
-`/users` renders the user list.
+Once authenticated, routes behave as follows:
+`/register` advises user is already registered and provides link to profile page.
+`/login` redirects to user profile page.
+`/users` and `/` render the user list.
 `/users/:username` is a dynamic route rendering the profile page of the user specified.
 `/users/:username/edit` renders the form to edit user information.
 
@@ -44,9 +46,8 @@ There are two unique indexes built in `app.js` for username and email to ensure 
 Check out the [Monk github page](http://github.com/Automattic/monk) for more information.
 
 ## Known Issues
-* Only allow user logged in to edit user information.
-* Remove edit link and password for other users visiting a user profile.
 * Pass on errors to client during registration/login (e.g. duplicate username)
+* Alert client on other forbidden actions (e.g. editing another user's profile)
 
 ## Future Changes
 * Redirect to a Hello World page on GET `/` when authenticated.

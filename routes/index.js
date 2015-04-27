@@ -4,11 +4,19 @@ var express = require('express'),
     bcrypt = require('bcrypt');
 
 router.get('/', function(req,res){
-    res.redirect('/login');
+    if(req.isAuthenticated()) {
+        res.redirect('/users');
+    } else {
+        res.redirect('/login');
+    }
 });
 
 router.get('/login', function(req, res){
-    res.render('login', title="Login");
+    if(req.isAuthenticated()) {
+        res.redirect('/users/' + req.user.username);
+    } else {
+        res.render('login', title="Login");
+    }
 });
 
 // Authorize with passport
@@ -50,7 +58,11 @@ router.get('/success', function(req, res){
 });*/
 
 router.get('/register', function(req, res){
-    res.render('register', title="Register");
+    if(req.isAuthenticated()) {
+        res.send("You're already registered. <a href='/users/" + req.user.username + "'>Go to your profile");
+    } else {
+        res.render('register', title="Register");
+    }
 });
 
 router.post('/addUser', function(req, res){
@@ -89,23 +101,30 @@ router.get('/users', ensureAuthenticated, function(req, res){
 router.get('/users/:username', ensureAuthenticated, function(req, res){
     var db = req.db,
         users = db.get('users'),
-        thisUser = req.params.username;
+        thisUser = req.params.username,
+        reqUser = req.user.username,
+        userIsMe = isUserMe(thisUser, reqUser);
 
     users.findOne({'username': thisUser},['-_id','-password'],function(err, doc){
         if(err) console.error(err);
-        res.render('profile', {title:"Profile of " + thisUser, user: doc});
+        res.render('profile', {title:"Profile of " + thisUser, user: doc, myProfile: userIsMe});
     });    
 });
 
 router.get('/users/:username/edit', ensureAuthenticated, function(req, res){
     var db = req.db,
         users = db.get('users'),
-        thisUser = req.params.username;
+        thisUser = req.params.username,
+        reqUser = req.user.username,
+        userIsMe = isUserMe(thisUser, reqUser);
 
-    users.findOne({'username': thisUser},['-_id','-password'],function(err, doc){
-        if(err) console.error(err);
-        res.render('profile-edit',{title:"Profile of " + thisUser, user: doc});
-    });
+    if(!userIsMe){ res.redirect('/users/' + thisUser) }
+    else{
+        users.findOne({'username': thisUser},['-_id','-password'],function(err, doc){
+            if(err) console.error(err);
+            res.render('profile-edit',{title:"Profile of " + thisUser, user: doc});
+        });
+    }
 });
 
 router.post('/users/:username/update', ensureAuthenticated, function(req, res){
@@ -128,6 +147,11 @@ router.post('/users/:username/update', ensureAuthenticated, function(req, res){
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(); }
   res.redirect('/login');
+}
+
+function isUserMe(thisUser, reqUser) {
+    if(reqUser === thisUser) { return true }
+    else { return false }
 }
 
 

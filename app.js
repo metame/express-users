@@ -17,7 +17,7 @@ var users = db.get('users');
 users.index('username', {unique : true});
 users.index('email', {unique : true});
 
-// set up for passport sessions
+// serialize user for passport sessions
 passport.serializeUser(function(user, done) {
   done(null, user.username);
 });

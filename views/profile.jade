@@ -6,7 +6,9 @@ block content
             tr
                 td= index
                 td= val
-        tr
-            td password
-            td <em>hidden for security</em>
-    a(href="/users/" + user.username + "/edit") Edit profile
+        if(myProfile)
+            tr
+                td password
+                td <em>hidden for security</em>
+    if(myProfile)
+        a(href="/users/" + user.username + "/edit") Edit profile
