@@ -51,7 +51,7 @@ Check out the [Monk github page](http://github.com/Automattic/monk) for more inf
 
 ## Future Changes
 * Make it stylish with bootstrap
-* Add dev tests
+* Add dev tests 
 
 ## Contributors
 * [Michael J Erwin](http://github.com/metame)
