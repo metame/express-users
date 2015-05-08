@@ -12,13 +12,13 @@ An Express template for user registration, login, and authentication.
 
 ## Setup
 Clone or fork repo 
-    $ git clone git@github.com:metame/profile-template
+`$ git clone git@github.com:metame/profile-template`
 
 Change to app's working directory
-    $ cd profile-template
+`$ cd profile-template`
 
 Install dependencies 
-    $ npm install
+    `$ npm install`
 
 No more setup required for default behavior.
 
