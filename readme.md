@@ -1,7 +1,7 @@
 # A Profile Template
 
 ## Description
-A template using Express for user registration, login, and authentication.
+An Express template for user registration, login, and authentication.
 
 ## Dependencies
 * Node v0.10.x
@@ -46,11 +46,10 @@ There are two unique indexes built in `app.js` for username and email to ensure 
 Check out the [Monk github page](http://github.com/Automattic/monk) for more information.
 
 ## Known Issues
-* Pass on errors to client during registration/login (e.g. duplicate username)
+* Errors aren't passed on to client during registration/login (e.g. duplicate username)
 * Alert client on other forbidden actions (e.g. editing another user's profile)
 
 ## Future Changes
-* Redirect to a Hello World page on GET `/` when authenticated.
 * Make it stylish with bootstrap
 * Add dev tests
 
